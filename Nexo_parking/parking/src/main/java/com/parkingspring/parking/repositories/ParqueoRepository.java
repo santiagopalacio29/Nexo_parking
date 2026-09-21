@@ -1,11 +1,5 @@
 package com.parkingspring.parking.repositories;
 
-import com.parkingspring.parking.identities.Factura;
-import com.parkingspring.parking.identities.RegistroParqueo;
-import com.parkingspring.parking.utilities.Conexion;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Connection;
@@ -18,6 +12,13 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.parkingspring.parking.identities.Factura;
+import com.parkingspring.parking.identities.RegistroParqueo;
+import com.parkingspring.parking.utilities.Conexion;
 
 @Repository
 public class ParqueoRepository {
@@ -59,10 +60,7 @@ public class ParqueoRepository {
         return null;
     }
 
-    /**
-     * Registra el ingreso de un vehículo: crea el registro de parqueo
-     * y marca el espacio como ocupado. Todo en una sola transacción.
-     */
+   
     public RegistroParqueo registrarEntrada(String placa, Integer idEspacio) {
         Connection con = null;
         try {
@@ -110,11 +108,7 @@ public class ParqueoRepository {
         }
     }
 
-    /**
-     * Registra la salida de un vehículo: calcula el tiempo total,
-     * consulta la tarifa según el tipo de vehículo, calcula el valor,
-     * genera la factura y libera el espacio. Todo en una sola transacción.
-     */
+   
     public Factura registrarSalida(Integer idRegistro, String metodoPago) {
         Connection con = null;
         try {

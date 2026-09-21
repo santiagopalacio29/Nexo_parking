@@ -24,13 +24,13 @@ public class ClienteController {
     @Autowired
     private ClienteService clienteService;
 
-    // GET /api/clientes -> Listar todos
+    // GET 
     @GetMapping
     public ResponseEntity<List<Cliente>> listar() {
         return ResponseEntity.ok(clienteService.listarClientes());
     }
 
-    // GET /api/clientes/{id} -> Obtener uno
+    // GET 
     @GetMapping("/{id}")
     public ResponseEntity<Cliente> obtener(@PathVariable Integer id) {
         Cliente cliente = clienteService.obtenerCliente(id);
@@ -40,7 +40,7 @@ public class ClienteController {
         return ResponseEntity.ok(cliente);
     }
 
-    // POST /api/clientes -> Crear
+    // POST 
     @PostMapping
     public ResponseEntity<Cliente> crear(@RequestBody Cliente cliente) {
         Cliente creado = clienteService.crearCliente(cliente);
@@ -50,7 +50,7 @@ public class ClienteController {
         return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
 
-    // PUT /api/clientes/{id} -> Actualizar
+    // PUT 
     @PutMapping("/{id}")
     public ResponseEntity<Cliente> actualizar(@PathVariable Integer id, @RequestBody Cliente cliente) {
         Cliente actualizado = clienteService.actualizarCliente(id, cliente);
@@ -60,7 +60,7 @@ public class ClienteController {
         return ResponseEntity.ok(actualizado);
     }
 
-    // DELETE /api/clientes/{id} -> Eliminar
+    // DELETE 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         boolean eliminado = clienteService.eliminarCliente(id);

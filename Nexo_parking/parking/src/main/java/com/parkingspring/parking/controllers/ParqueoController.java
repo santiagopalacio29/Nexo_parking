@@ -18,13 +18,13 @@ public class ParqueoController {
     @Autowired
     private ParqueoService parqueoService;
 
-    // GET /api/parqueo -> listar todos los registros
+    //  listar todos los registros
     @GetMapping
     public ResponseEntity<List<RegistroParqueo>> listar() {
         return ResponseEntity.ok(parqueoService.listarRegistros());
     }
 
-    // GET /api/parqueo/{id} -> consultar un registro
+    //  consultar un registro
     @GetMapping("/{id}")
     public ResponseEntity<RegistroParqueo> obtener(@PathVariable Integer id) {
         RegistroParqueo registro = parqueoService.obtenerRegistro(id);
@@ -34,7 +34,7 @@ public class ParqueoController {
         return ResponseEntity.ok(registro);
     }
 
-    // POST /api/parqueo/entrada  body: {"placa":"ABC123","idEspacio":1}
+    // POST 
     @PostMapping("/entrada")
     public ResponseEntity<RegistroParqueo> registrarEntrada(@RequestBody Map<String, Object> body) {
         String placa = (String) body.get("placa");
@@ -47,7 +47,7 @@ public class ParqueoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(registro);
     }
 
-    // PUT /api/parqueo/{id}/salida  body: {"metodoPago":"efectivo"}
+    // PUT 
     @PutMapping("/{id}/salida")
     public ResponseEntity<Factura> registrarSalida(@PathVariable Integer id, @RequestBody Map<String, Object> body) {
         String metodoPago = (String) body.get("metodoPago");
