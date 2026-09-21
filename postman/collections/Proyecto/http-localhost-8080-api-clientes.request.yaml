@@ -1,0 +1,21 @@
+$kind: http-request
+name: http://localhost:8080/api/clientes
+description: ""
+url: http://localhost:8080/api/clientes
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"documento\": \"1000555666\",\r
+
+    \    \"nombre\": \"Carlos\",\r
+
+    \    \"apellido\": \"Rodriguez\",\r
+
+    \    \"telefono\": \"3105556677\",\r
+
+    \    \"email\": \"carlos.rodriguez@gmail.com\"\r
+
+    }"
+order: 1123796531813045
