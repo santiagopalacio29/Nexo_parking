@@ -14,59 +14,55 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.parkingspring.parking.identities.Cliente;
-import com.parkingspring.parking.services.ClienteService;
+import com.parkingspring.parking.identities.Factura;
+import com.parkingspring.parking.services.FacturaService;
 
 @RestController
-@RequestMapping("/api/clientes")
-public class ClienteController {
+@RequestMapping("/api/factura")
+public class FacturaController {
 
     @Autowired
-    private ClienteService clienteService;
+    private FacturaService facturaService;
 
-    // GET 
     @GetMapping
-    public ResponseEntity<List<Cliente>> listar() {
-        return ResponseEntity.ok(clienteService.listarCliente());
+    public ResponseEntity<List<Factura>> listar() {
+        return ResponseEntity.ok(facturaService.listarFactura());
     }
 
-    // GET 
     @GetMapping("/{id}")
-    public ResponseEntity<Cliente> obtener(@PathVariable Integer id) {
-        Cliente cliente = clienteService.obtenerPorId(id);
-        if (cliente == null) {
+    public ResponseEntity<Factura> obtener(@PathVariable Integer id) {
+        Factura factura = facturaService.obtenerFactura(id);
+        if (factura == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(cliente);
+        return ResponseEntity.ok(factura);
     }
 
-    // POST 
     @PostMapping
-    public ResponseEntity<Cliente> crear(@RequestBody Cliente cliente) {
-        Cliente creado = clienteService.crearCliente(cliente);
+    public ResponseEntity<Factura> crear(@RequestBody Factura factura) {
+        Factura creado = facturaService.insertarFactura(factura);
         if (creado == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
 
-    // PUT 
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> actualizar(@PathVariable Integer id, @RequestBody Cliente cliente) {
-        Cliente actualizado = clienteService.actualizarCliente(id, cliente);
+    public ResponseEntity<Factura> actualizar(@PathVariable Integer id, @RequestBody Factura factura) {
+        Factura actualizado = facturaService.actualizarFactura(id, factura);
         if (actualizado == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(actualizado);
     }
 
-    // DELETE 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
-        boolean eliminado = clienteService.eliminarCliente(id);
+        boolean eliminado = facturaService.eliminarFactura(id);
         if (!eliminado) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.noContent().build();
     }
 }
+
