@@ -16,7 +16,7 @@ import com.parkingspring.parking.identities.Factura;
 import com.parkingspring.parking.utilities.Conexion;
 
 @Repository
-public class FacturaRepository {
+public class FacturaRepository implements FacturaRepositoryInterface{
 
     @Autowired
     private FacturaDAOHelper helper;
@@ -24,7 +24,7 @@ public class FacturaRepository {
     @Autowired
     private Conexion conexion;
 
-    public List<Factura> listar() {
+    public List<Factura> listarFactura() {
         List<Factura> facturas = new ArrayList<>();
         try (Connection con = conexion.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(helper.listarFacturas());
@@ -39,7 +39,7 @@ public class FacturaRepository {
         return facturas;
     }
 
-    public Factura obtenerPorId(Integer id) {
+    public Factura obtenerFactura(Integer id) {
         Factura factura = null;
         try (Connection con = conexion.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(helper.obtenerFactura())) {
@@ -56,7 +56,7 @@ public class FacturaRepository {
         return factura;
     }
 
-    public Factura insertar(Factura factura) {
+    public Factura insertarFactura(Factura factura) {
         try (Connection con = conexion.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(helper.insertarFactura(), Statement.RETURN_GENERATED_KEYS)) {
 
@@ -79,7 +79,7 @@ public class FacturaRepository {
         return factura;
     }
 
-    public Factura actualizar(Factura factura) {
+    public Factura actualizarFactura(Factura factura) {
         try (Connection con = conexion.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(helper.actualizarFactura())) {
 
@@ -100,7 +100,7 @@ public class FacturaRepository {
         return factura;
     }
 
-    public boolean eliminar(Integer id) {
+    public boolean eliminarFactura(Integer id) {
         try (Connection con = conexion.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(helper.eliminarFactura())) {
 

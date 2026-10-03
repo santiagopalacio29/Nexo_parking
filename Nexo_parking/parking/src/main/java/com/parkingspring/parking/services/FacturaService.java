@@ -1,36 +1,38 @@
 package com.parkingspring.parking.services;
 
 import com.parkingspring.parking.identities.Factura;
-import com.parkingspring.parking.repositories.FacturaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.parkingspring.parking.repositories.FacturaRepositoryInterface;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class FacturaService {
+public class FacturaService implements FacturaServiceInterface{
 
-    @Autowired
-    private FacturaRepository facturaRepository;
+    private final FacturaRepositoryInterface facturaRepository;
+
+    public FacturaService(FacturaRepositoryInterface facturaRepository){
+        this.facturaRepository = facturaRepository;
+    }
 
     public List<Factura> listarFactura() {
-        return facturaRepository.listar();
+        return facturaRepository.listarFactura();
     }
 
     public Factura obtenerFactura(Integer id) {
-        return facturaRepository.obtenerPorId(id);
+        return facturaRepository.obtenerFactura(id);
     }
 
-    public Factura crearFactura(Factura factura) {
-        return facturaRepository.insertar(factura);
+    public Factura insertarFactura(Factura factura) {
+        return facturaRepository.insertarFactura(factura);
     }
 
     public Factura actualizarFactura(Integer id, Factura factura) {
         factura.setIdFactura(id);
-        return facturaRepository.actualizar(factura);
+        return facturaRepository.actualizarFactura(factura);
     }
 
     public boolean eliminarFactura(Integer id) {
-        return facturaRepository.eliminar(id);
+        return facturaRepository.eliminarFactura(id);
     }
 }

@@ -27,13 +27,13 @@ public class ClienteController {
     // GET 
     @GetMapping
     public ResponseEntity<List<Cliente>> listar() {
-        return ResponseEntity.ok(clienteService.listarClientes());
+        return ResponseEntity.ok(clienteService.listarCliente());
     }
 
     // GET 
     @GetMapping("/{id}")
     public ResponseEntity<Cliente> obtener(@PathVariable Integer id) {
-        Cliente cliente = clienteService.obtenerCliente(id);
+        Cliente cliente = clienteService.obtenerPorId(id);
         if (cliente == null) {
             return ResponseEntity.notFound().build();
         }

@@ -24,13 +24,11 @@ public class FacturaController {
     @Autowired
     private FacturaService facturaService;
 
-    // GET
     @GetMapping
     public ResponseEntity<List<Factura>> listar() {
         return ResponseEntity.ok(facturaService.listarFactura());
     }
 
-    // GET
     @GetMapping("/{id}")
     public ResponseEntity<Factura> obtener(@PathVariable Integer id) {
         Factura factura = facturaService.obtenerFactura(id);
@@ -40,17 +38,15 @@ public class FacturaController {
         return ResponseEntity.ok(factura);
     }
 
-    // POST
     @PostMapping
     public ResponseEntity<Factura> crear(@RequestBody Factura factura) {
-        Factura creado = facturaService.crearFactura(factura);
+        Factura creado = facturaService.insertarFactura(factura);
         if (creado == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
 
-    // PUT
     @PutMapping("/{id}")
     public ResponseEntity<Factura> actualizar(@PathVariable Integer id, @RequestBody Factura factura) {
         Factura actualizado = facturaService.actualizarFactura(id, factura);
@@ -60,7 +56,6 @@ public class FacturaController {
         return ResponseEntity.ok(actualizado);
     }
 
-    // DELETE
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         boolean eliminado = facturaService.eliminarFactura(id);
