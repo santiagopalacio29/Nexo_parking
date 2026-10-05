@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,49 +25,82 @@ public class ClienteController {
     @Autowired
     private ClienteService clienteService;
 
-    // GET 
     @GetMapping
     public ResponseEntity<List<Cliente>> listar() {
-        return ResponseEntity.ok(clienteService.listarCliente());
+        try {
+            return new ResponseEntity<>(clienteService.listarCliente(), HttpStatus.OK);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return new ResponseEntity<>(List.of(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    // GET 
     @GetMapping("/{id}")
     public ResponseEntity<Cliente> obtener(@PathVariable Integer id) {
-        Cliente cliente = clienteService.obtenerPorId(id);
-        if (cliente == null) {
-            return ResponseEntity.notFound().build();
+        if (id == null || id <= 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        return ResponseEntity.ok(cliente);
+        try {
+            Cliente cliente = clienteService.obtenerPorId(id);
+            if (cliente == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            return new ResponseEntity<>(cliente, HttpStatus.OK);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
-    // POST 
     @PostMapping
     public ResponseEntity<Cliente> crear(@RequestBody Cliente cliente) {
-        Cliente creado = clienteService.crearCliente(cliente);
-        if (creado == null) {
-            return ResponseEntity.badRequest().build();
+        if (ObjectUtils.isEmpty(cliente) || ObjectUtils.isEmpty(cliente.getDocumento())
+                || ObjectUtils.isEmpty(cliente.getNombre()) || ObjectUtils.isEmpty(cliente.getApellido())) {
+            return new ResponseEntity<>(cliente, HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(creado);
+        try {
+            Cliente creado = clienteService.crearCliente(cliente);
+            if (creado == null) {
+                return new ResponseEntity<>(cliente, HttpStatus.NOT_ACCEPTABLE);
+            }
+            return new ResponseEntity<>(creado, HttpStatus.CREATED);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return new ResponseEntity<>(cliente, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    // PUT 
     @PutMapping("/{id}")
     public ResponseEntity<Cliente> actualizar(@PathVariable Integer id, @RequestBody Cliente cliente) {
-        Cliente actualizado = clienteService.actualizarCliente(id, cliente);
-        if (actualizado == null) {
-            return ResponseEntity.notFound().build();
+        if (id == null || id <= 0 || ObjectUtils.isEmpty(cliente) || ObjectUtils.isEmpty(cliente.getDocumento())) {
+            return new ResponseEntity<>(cliente, HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.ok(actualizado);
+        try {
+            Cliente actualizado = clienteService.actualizarCliente(id, cliente);
+            if (actualizado == null) {
+                return new ResponseEntity<>(cliente, HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(actualizado, HttpStatus.OK);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return new ResponseEntity<>(cliente, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    // DELETE 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
-        boolean eliminado = clienteService.eliminarCliente(id);
-        if (!eliminado) {
-            return ResponseEntity.notFound().build();
+        if (id == null || id <= 0) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.noContent().build();
+        try {
+            boolean eliminado = clienteService.eliminarCliente(id);
+            if (!eliminado) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

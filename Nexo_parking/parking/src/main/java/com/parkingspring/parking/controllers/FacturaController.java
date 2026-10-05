@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,43 +27,79 @@ public class FacturaController {
 
     @GetMapping
     public ResponseEntity<List<Factura>> listar() {
-        return ResponseEntity.ok(facturaService.listarFactura());
+        try {
+            return new ResponseEntity<>(facturaService.listarFactura(), HttpStatus.OK);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return new ResponseEntity<>(List.of(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Factura> obtener(@PathVariable Integer id) {
-        Factura factura = facturaService.obtenerFactura(id);
-        if (factura == null) {
-            return ResponseEntity.notFound().build();
+        if (id == null || id <= 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        return ResponseEntity.ok(factura);
+        try {
+            Factura factura = facturaService.obtenerFactura(id);
+            if (factura == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            return new ResponseEntity<>(factura, HttpStatus.OK);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PostMapping
     public ResponseEntity<Factura> crear(@RequestBody Factura factura) {
-        Factura creado = facturaService.insertarFactura(factura);
-        if (creado == null) {
-            return ResponseEntity.badRequest().build();
+        if (ObjectUtils.isEmpty(factura) || factura.getIdRegistro() == null || factura.getValorTotal() == null) {
+            return new ResponseEntity<>(factura, HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(creado);
+        try {
+            Factura creado = facturaService.insertarFactura(factura);
+            if (creado == null) {
+                return new ResponseEntity<>(factura, HttpStatus.NOT_ACCEPTABLE);
+            }
+            return new ResponseEntity<>(creado, HttpStatus.CREATED);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return new ResponseEntity<>(factura, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Factura> actualizar(@PathVariable Integer id, @RequestBody Factura factura) {
-        Factura actualizado = facturaService.actualizarFactura(id, factura);
-        if (actualizado == null) {
-            return ResponseEntity.notFound().build();
+        if (id == null || id <= 0 || ObjectUtils.isEmpty(factura)) {
+            return new ResponseEntity<>(factura, HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.ok(actualizado);
+        try {
+            Factura actualizado = facturaService.actualizarFactura(id, factura);
+            if (actualizado == null) {
+                return new ResponseEntity<>(factura, HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(actualizado, HttpStatus.OK);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return new ResponseEntity<>(factura, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
-        boolean eliminado = facturaService.eliminarFactura(id);
-        if (!eliminado) {
-            return ResponseEntity.notFound().build();
+        if (id == null || id <= 0) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.noContent().build();
+        try {
+            boolean eliminado = facturaService.eliminarFactura(id);
+            if (!eliminado) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
-
