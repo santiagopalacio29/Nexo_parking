@@ -21,7 +21,7 @@ import com.parkingspring.parking.identities.RegistroParqueo;
 import com.parkingspring.parking.utilities.Conexion;
 
 @Repository
-public class ParqueoRepository {
+public class ParqueoRepository implements ParqueoRepositoryInterface{
 
     @Autowired
     private ParqueoDAOHelper helper;
@@ -29,7 +29,7 @@ public class ParqueoRepository {
     @Autowired
     private Conexion conexion;
 
-    public List<RegistroParqueo> listar() {
+    public List<RegistroParqueo> listarRegistros() {
         List<RegistroParqueo> registros = new ArrayList<>();
         try (Connection con = conexion.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(helper.listarRegistros());
@@ -44,7 +44,7 @@ public class ParqueoRepository {
         return registros;
     }
 
-    public RegistroParqueo obtenerPorId(Integer id) {
+    public RegistroParqueo obtenerRegistro(Integer id) {
         try (Connection con = conexion.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(helper.obtenerRegistro())) {
 

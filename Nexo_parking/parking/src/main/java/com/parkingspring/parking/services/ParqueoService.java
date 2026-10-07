@@ -2,24 +2,26 @@ package com.parkingspring.parking.services;
 
 import com.parkingspring.parking.identities.Factura;
 import com.parkingspring.parking.identities.RegistroParqueo;
-import com.parkingspring.parking.repositories.ParqueoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.parkingspring.parking.repositories.ParqueoRepositoryInterface;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class ParqueoService {
+public class ParqueoService implements ParqueoServiceInterface{
 
-    @Autowired
-    private ParqueoRepository parqueoRepository;
+    private final ParqueoRepositoryInterface parqueoRepository;
+
+    public ParqueoService(ParqueoRepositoryInterface parqueoRepository){
+        this.parqueoRepository = parqueoRepository;
+    }
 
     public List<RegistroParqueo> listarRegistros() {
-        return parqueoRepository.listar();
+        return parqueoRepository.listarRegistros();
     }
 
     public RegistroParqueo obtenerRegistro(Integer id) {
-        return parqueoRepository.obtenerPorId(id);
+        return parqueoRepository.obtenerRegistro(id);
     }
 
     public RegistroParqueo registrarEntrada(String placa, Integer idEspacio) {
