@@ -15,20 +15,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.parkingspring.parking.identities.Cliente;
-import com.parkingspring.parking.services.ClienteService;
+import com.parkingspring.parking.identities.Factura;
+import com.parkingspring.parking.services.FacturaService;
 
 @RestController
-@RequestMapping("/api/clientes")
-public class ClienteController {
+@RequestMapping("/api/factura")
+public class FacturaController {
 
     @Autowired
-    private ClienteService clienteService;
+    private FacturaService facturaService;
 
     @GetMapping
-    public ResponseEntity<List<Cliente>> listar() {
+    public ResponseEntity<List<Factura>> listar() {
         try {
-            return new ResponseEntity<>(clienteService.listarCliente(), HttpStatus.OK);
+            return new ResponseEntity<>(facturaService.listarFactura(), HttpStatus.OK);
         } catch (Exception exception) {
             exception.printStackTrace();
             return new ResponseEntity<>(List.of(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -36,16 +36,16 @@ public class ClienteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cliente> obtener(@PathVariable Integer id) {
+    public ResponseEntity<Factura> obtener(@PathVariable Integer id) {
         if (id == null || id <= 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         try {
-            Cliente cliente = clienteService.obtenerPorId(id);
-            if (cliente == null) {
+            Factura factura = facturaService.obtenerFactura(id);
+            if (factura == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
-            return new ResponseEntity<>(cliente, HttpStatus.OK);
+            return new ResponseEntity<>(factura, HttpStatus.OK);
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -53,37 +53,36 @@ public class ClienteController {
     }
 
     @PostMapping
-    public ResponseEntity<Cliente> crear(@RequestBody Cliente cliente) {
-        if (ObjectUtils.isEmpty(cliente) || ObjectUtils.isEmpty(cliente.getDocumento())
-                || ObjectUtils.isEmpty(cliente.getNombre()) || ObjectUtils.isEmpty(cliente.getApellido())) {
-            return new ResponseEntity<>(cliente, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Factura> crear(@RequestBody Factura factura) {
+        if (ObjectUtils.isEmpty(factura) || factura.getIdRegistro() == null || factura.getValorTotal() == null) {
+            return new ResponseEntity<>(factura, HttpStatus.BAD_REQUEST);
         }
         try {
-            Cliente creado = clienteService.crearCliente(cliente);
+            Factura creado = facturaService.insertarFactura(factura);
             if (creado == null) {
-                return new ResponseEntity<>(cliente, HttpStatus.NOT_ACCEPTABLE);
+                return new ResponseEntity<>(factura, HttpStatus.NOT_ACCEPTABLE);
             }
             return new ResponseEntity<>(creado, HttpStatus.CREATED);
         } catch (Exception exception) {
             exception.printStackTrace();
-            return new ResponseEntity<>(cliente, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(factura, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> actualizar(@PathVariable Integer id, @RequestBody Cliente cliente) {
-        if (id == null || id <= 0 || ObjectUtils.isEmpty(cliente) || ObjectUtils.isEmpty(cliente.getDocumento())) {
-            return new ResponseEntity<>(cliente, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Factura> actualizar(@PathVariable Integer id, @RequestBody Factura factura) {
+        if (id == null || id <= 0 || ObjectUtils.isEmpty(factura)) {
+            return new ResponseEntity<>(factura, HttpStatus.BAD_REQUEST);
         }
         try {
-            Cliente actualizado = clienteService.actualizarCliente(id, cliente);
+            Factura actualizado = facturaService.actualizarFactura(id, factura);
             if (actualizado == null) {
-                return new ResponseEntity<>(cliente, HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(factura, HttpStatus.NOT_FOUND);
             }
             return new ResponseEntity<>(actualizado, HttpStatus.OK);
         } catch (Exception exception) {
             exception.printStackTrace();
-            return new ResponseEntity<>(cliente, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(factura, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -93,7 +92,7 @@ public class ClienteController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         try {
-            boolean eliminado = clienteService.eliminarCliente(id);
+            boolean eliminado = facturaService.eliminarFactura(id);
             if (!eliminado) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }

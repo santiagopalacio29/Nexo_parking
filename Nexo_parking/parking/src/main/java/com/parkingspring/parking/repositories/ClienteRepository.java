@@ -15,7 +15,7 @@ import com.parkingspring.parking.identities.Cliente;
 import com.parkingspring.parking.utilities.Conexion;
 
 @Repository
-public class ClienteRepository {
+public class ClienteRepository implements ClienteRepositoryInterface {
 
     @Autowired
     private ClienteDAOHelper helper;
@@ -23,7 +23,7 @@ public class ClienteRepository {
     @Autowired
     private Conexion conexion;
 
-    public List<Cliente> listar() {
+    public List<Cliente> listarCliente() {
         List<Cliente> clientes = new ArrayList<>();
         try (Connection con = conexion.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(helper.listarClientes());
@@ -55,7 +55,7 @@ public class ClienteRepository {
         return cliente;
     }
 
-    public Cliente insertar(Cliente cliente) {
+    public Cliente crearCliente(Cliente cliente) {
         try (Connection con = conexion.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(helper.insertarCliente(), Statement.RETURN_GENERATED_KEYS)) {
 
@@ -78,7 +78,7 @@ public class ClienteRepository {
         return cliente;
     }
 
-    public Cliente actualizar(Cliente cliente) {
+    public Cliente actualizarCliente(Cliente cliente) {
         try (Connection con = conexion.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(helper.actualizarCliente())) {
 
@@ -100,7 +100,7 @@ public class ClienteRepository {
         return cliente;
     }
 
-    public boolean eliminar(Integer id) {
+    public boolean eliminarCliente(Integer id) {
         try (Connection con = conexion.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(helper.eliminarCliente())) {
 
