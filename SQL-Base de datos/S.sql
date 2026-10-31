@@ -16,18 +16,6 @@ INSERT INTO cliente (documento, nombre, apellido, telefono, email) VALUES
 ('1000111222', 'Juan', 'Perez', '3001234567', 'juan.perez@mail.com'),
 ('1000333444', 'Maria', 'Gomez', '3009876543', 'maria.gomez@mail.com');
 
-
-SELECT * FROM cliente;
-
-USE proyecto_spring;
-
-SELECT * FROM cliente;
-
- SELECT * FROM cliente;
- 
- 
- USE proyecto_spring;
-
 SELECT * FROM cliente
 WHERE id_cliente = 7;
 
@@ -44,8 +32,8 @@ CREATE TABLE IF NOT EXISTS espacio (
     id_espacio    INT AUTO_INCREMENT PRIMARY KEY,
     numero_espacio INT NOT NULL,
     nivel         INT NOT NULL,
-    estado        BOOLEAN DEFAULT TRUE,       -
-    tipo_espacio  VARCHAR(20)
+	estado        BOOLEAN DEFAULT TRUE,       
+	tipo_espacio  VARCHAR(20)
 );
  
 CREATE TABLE IF NOT EXISTS tarifa (
@@ -88,5 +76,9 @@ INSERT INTO espacio (numero_espacio, nivel, estado, tipo_espacio) VALUES
 INSERT INTO vehiculo (placa, marca, color, tipo_vehiculo, documento_cliente) VALUES
 ('ABC123', 'Mazda', 'Rojo', 'carro', '1000111222');
 
+INSERT INTO factura (id_factura, id_registro, fecha_pago, valor_total, metodo_pago) VALUES
+(12345678, 1234, '1999-19-19 00:00:00', 1234567, 'efectivo');
 
+SHOW TABLES;
 
+DELETE *:

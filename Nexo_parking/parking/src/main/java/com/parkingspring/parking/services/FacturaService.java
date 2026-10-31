@@ -3,7 +3,6 @@ package com.parkingspring.parking.services;
 import com.parkingspring.parking.identities.Factura;
 import com.parkingspring.parking.repositories.FacturaRepositoryInterface;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service

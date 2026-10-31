@@ -83,13 +83,12 @@ public class FacturaRepository implements FacturaRepositoryInterface {
         try (Connection con = conexion.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(helper.actualizarFactura())) {
 
-            // El SQL tiene 6 "?" (5 campos a actualizar + el id_factura del WHERE).
             ps.setInt(1, factura.getIdFactura());
             ps.setInt(2, factura.getIdRegistro());
             ps.setObject(3, factura.getFechaPago());
             ps.setDouble(4, factura.getValorTotal());
             ps.setString(5, factura.getMetodoPago());
-            ps.setInt(6, factura.getIdFactura()); // parametro del WHERE, antes faltaba
+            ps.setInt(6, factura.getIdFactura());
 
             int filas = ps.executeUpdate();
             if (filas == 0) {
