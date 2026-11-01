@@ -87,7 +87,6 @@ public class FacturaRepository implements FacturaRepositoryInterface {
     public Factura actualizarFactura(Factura factura) {
         try (Connection con = conexion.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(helper.actualizarFactura())) {
-            
             ps.setInt(1, factura.getIdFactura());
             ps.setInt(2, factura.getIdRegistro());
             ps.setObject(3, factura.getFechaPago());
