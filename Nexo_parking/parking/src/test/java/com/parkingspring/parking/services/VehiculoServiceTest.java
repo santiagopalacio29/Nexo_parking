@@ -27,9 +27,9 @@ class VehiculoServiceTest {
         Vehiculo vehiculoSimulado = Vehiculo.builder()
                 .placa(placa)
                 .marca("Mazda")
-                .color("Rojo")
+                .color("Rojo") 
                 .tipoVehiculo("CARRO")
-                .documentoCliente("102030")
+                .cliente(null) 
                 .build();
 
         

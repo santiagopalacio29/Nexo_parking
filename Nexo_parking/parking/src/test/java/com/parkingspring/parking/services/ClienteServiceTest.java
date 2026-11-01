@@ -24,17 +24,23 @@ class ClienteServiceTest {
     void debeObtenerClientePorIdCorrectamente() {
         
         Integer idCliente = 1;
-        Cliente clienteSimulado = new Cliente(1, "102030", "Santiago", "Palacio", "3000000", "santi@test.com");
-        
-        
+        Cliente clienteSimulado = Cliente.builder()
+                .idCliente(idCliente)
+                .documento("102030")
+                .nombre("Santiago")
+                .apellido("Palacio")
+                .telefono("3000000")
+                .email("santi@test.com")
+                .build();
+
         when(clienteRepository.obtenerPorId(idCliente)).thenReturn(clienteSimulado);
 
-    
+        
         Cliente resultado = clienteService.obtenerPorId(idCliente);
 
         
         assertNotNull(resultado, "El cliente no debería ser nulo");
         assertEquals("Santiago", resultado.getNombre(), "El nombre no coincide");
-        verify(clienteRepository, times(1)).obtenerPorId(idCliente); 
+        verify(clienteRepository, times(1)).obtenerPorId(idCliente);
     }
 }

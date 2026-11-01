@@ -1,5 +1,6 @@
 package com.parkingspring.parking.repositories;
 
+import com.parkingspring.parking.identities.Cliente;
 import com.parkingspring.parking.identities.Vehiculo;
 import com.parkingspring.parking.utilities.Conexion;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,7 @@ public class VehiculoRepository implements VehiculoRepositoryInterface{
             ps.setString(2, vehiculo.getMarca());
             ps.setString(3, vehiculo.getColor());
             ps.setString(4, vehiculo.getTipoVehiculo());
-            ps.setString(5, vehiculo.getDocumentoCliente());
+            ps.setString(5, vehiculo.getCliente() != null ? vehiculo.getCliente().getDocumento() : null);
             ps.executeUpdate();
 
             try (ResultSet keys = ps.getGeneratedKeys()) {
@@ -80,7 +81,7 @@ public class VehiculoRepository implements VehiculoRepositoryInterface{
             ps.setString(2, vehiculo.getMarca());
             ps.setString(3, vehiculo.getColor());
             ps.setString(4, vehiculo.getTipoVehiculo());
-            ps.setString(5, vehiculo.getDocumentoCliente());
+            ps.setString(5, vehiculo.getCliente() != null ? vehiculo.getCliente().getDocumento() : null);
             ps.setString(6, vehiculo.getPlaca());
 
             int filas = ps.executeUpdate();
@@ -107,12 +108,18 @@ public class VehiculoRepository implements VehiculoRepositoryInterface{
     }
 
     private Vehiculo mapearVehiculo(ResultSet rs) throws SQLException {
+        
+        Cliente clienteAsociado = Cliente.builder()
+                .documento(rs.getString("documento_cliente"))
+                .build();
+
         return Vehiculo.builder()
                 .placa(rs.getString("placa"))
                 .marca(rs.getString("marca"))
                 .color(rs.getString("color"))
                 .tipoVehiculo(rs.getString("tipo_vehiculo"))
-                .documentoCliente(rs.getString("documento_cliente"))
+                .cliente(clienteAsociado) 
                 .build();
+    
     }
 }

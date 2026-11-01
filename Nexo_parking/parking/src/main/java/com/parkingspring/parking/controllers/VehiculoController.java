@@ -53,8 +53,13 @@ public class VehiculoController {
 
     @PostMapping
     public ResponseEntity<Vehiculo> crear(@RequestBody Vehiculo vehiculo) {
-        if (ObjectUtils.isEmpty(vehiculo) || vehiculo.getDocumentoCliente().isBlank()|| vehiculo.getTipoVehiculo().isBlank()) {
+        if (ObjectUtils.isEmpty(vehiculo) || 
+            vehiculo.getCliente() == null || 
+            vehiculo.getCliente().getDocumento() == null || 
+            vehiculo.getCliente().getDocumento().isBlank() || 
+            vehiculo.getTipoVehiculo().isBlank()) {
             return new ResponseEntity<>(vehiculo, HttpStatus.BAD_REQUEST);
+        
         }
         try {
             Vehiculo creado = vehiculoService.insertarVehiculo(vehiculo);
