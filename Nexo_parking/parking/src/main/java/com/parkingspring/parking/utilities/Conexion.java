@@ -7,11 +7,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-/**
- * Centraliza la obtención de conexiones JDBC.
- * Usa el DataSource que Spring Boot configura automáticamente
- * a partir de spring.datasource.* en application.properties.
- */
+
 @Component
 public class Conexion {
 
