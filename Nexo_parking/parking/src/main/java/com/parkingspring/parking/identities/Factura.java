@@ -16,5 +16,5 @@ public class Factura {
     private Integer idRegistro;
     private LocalDateTime fechaPago;
     private Double valorTotal;
-    private String metodoPago;
+    private MetodoPago metodoPago;
 }

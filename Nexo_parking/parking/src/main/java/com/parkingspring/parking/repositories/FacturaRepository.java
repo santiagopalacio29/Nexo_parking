@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.parkingspring.parking.identities.Factura;
+import com.parkingspring.parking.identities.MetodoPago;
 import com.parkingspring.parking.utilities.Conexion;
 
 @Repository
@@ -56,6 +57,8 @@ public class FacturaRepository implements FacturaRepositoryInterface {
         return factura;
     }
 
+
+
     public Factura insertarFactura(Factura factura) {
         try (Connection con = conexion.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(helper.insertarFactura(), Statement.RETURN_GENERATED_KEYS)) {
@@ -64,8 +67,10 @@ public class FacturaRepository implements FacturaRepositoryInterface {
             ps.setInt(2, factura.getIdRegistro());
             ps.setObject(3, factura.getFechaPago());
             ps.setDouble(4, factura.getValorTotal());
-            ps.setString(5, factura.getMetodoPago());
+            
+            ps.setString(5, factura.getMetodoPago() != null ? factura.getMetodoPago().name() : null);
             ps.executeUpdate();
+           
 
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) {
@@ -82,14 +87,14 @@ public class FacturaRepository implements FacturaRepositoryInterface {
     public Factura actualizarFactura(Factura factura) {
         try (Connection con = conexion.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(helper.actualizarFactura())) {
-
-            // El SQL tiene 6 "?" (5 campos a actualizar + el id_factura del WHERE).
+            
             ps.setInt(1, factura.getIdFactura());
             ps.setInt(2, factura.getIdRegistro());
             ps.setObject(3, factura.getFechaPago());
             ps.setDouble(4, factura.getValorTotal());
-            ps.setString(5, factura.getMetodoPago());
-            ps.setInt(6, factura.getIdFactura()); // parametro del WHERE, antes faltaba
+            // Convertimos el Enum a String
+            ps.setString(5, factura.getMetodoPago() != null ? factura.getMetodoPago().name() : null);
+            ps.setInt(6, factura.getIdFactura());
 
             int filas = ps.executeUpdate();
             if (filas == 0) {
@@ -115,12 +120,14 @@ public class FacturaRepository implements FacturaRepositoryInterface {
     }
 
     private Factura mapearFactura(ResultSet rs) throws SQLException {
+        String metodoStr = rs.getString("metodo_pago");
         return Factura.builder()
                 .idFactura(rs.getInt("id_factura"))
                 .idRegistro(rs.getInt("id_registro"))
                 .fechaPago(rs.getObject("fecha_pago", LocalDateTime.class))
                 .valorTotal(rs.getDouble("valor_total"))
-                .metodoPago(rs.getString("metodo_pago"))
+                
+                .metodoPago(metodoStr != null ? MetodoPago.valueOf(metodoStr) : null)
                 .build();
     }
 }

@@ -17,11 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.parkingspring.parking.identities.Factura;
+import com.parkingspring.parking.identities.MetodoPago;
 import com.parkingspring.parking.identities.RegistroParqueo;
 import com.parkingspring.parking.utilities.Conexion;
 
 @Repository
-public class ParqueoRepository implements ParqueoRepositoryInterface{
+public class ParqueoRepository implements ParqueoRepositoryInterface {
 
     @Autowired
     private ParqueoDAOHelper helper;
@@ -60,7 +61,6 @@ public class ParqueoRepository implements ParqueoRepositoryInterface{
         return null;
     }
 
-   
     public RegistroParqueo registrarEntrada(String placa, Integer idEspacio) {
         Connection con = null;
         try {
@@ -108,7 +108,6 @@ public class ParqueoRepository implements ParqueoRepositoryInterface{
         }
     }
 
-   
     public Factura registrarSalida(Integer idRegistro, String metodoPago) {
         Connection con = null;
         try {
@@ -118,12 +117,12 @@ public class ParqueoRepository implements ParqueoRepositoryInterface{
             RegistroParqueo registro = obtenerRegistroParaActualizar(con, idRegistro);
             if (registro == null || registro.getFechaHoraSalida() != null) {
                 con.rollback();
-                return null; // no existe o ya tiene salida registrada
+                return null; 
             }
 
             LocalDateTime ahora = LocalDateTime.now();
             double horas = Duration.between(registro.getFechaHoraEntrada(), ahora).toMinutes() / 60.0;
-            double horasCobradas = Math.max(1.0, Math.ceil(horas)); // mínimo 1 hora
+            double horasCobradas = Math.max(1.0, Math.ceil(horas)); 
 
             try (PreparedStatement ps = con.prepareStatement(helper.registrarSalida())) {
                 ps.setTimestamp(1, Timestamp.valueOf(ahora));
@@ -138,7 +137,7 @@ public class ParqueoRepository implements ParqueoRepositoryInterface{
                 try (ResultSet rs = ps.executeQuery()) {
                     if (!rs.next()) {
                         con.rollback();
-                        return null; // no hay tarifa configurada para ese tipo de vehículo
+                        return null; 
                     }
                     valorHora = rs.getBigDecimal("valor_hora");
                 }
@@ -148,18 +147,19 @@ public class ParqueoRepository implements ParqueoRepositoryInterface{
                     .multiply(BigDecimal.valueOf(horasCobradas))
                     .setScale(2, RoundingMode.HALF_UP);
 
+            // AQUÍ CONVERTIMOS EL STRING AL ENUM
             Factura factura = Factura.builder()
                     .idRegistro(idRegistro)
                     .fechaPago(ahora)
                     .valorTotal(valorTotal.doubleValue())
-                    .metodoPago(metodoPago)
+                    .metodoPago(MetodoPago.valueOf(metodoPago.toUpperCase())) 
                     .build();
 
             try (PreparedStatement ps = con.prepareStatement(helper.insertarFactura(), Statement.RETURN_GENERATED_KEYS)) {
                 ps.setInt(1, idRegistro);
                 ps.setTimestamp(2, Timestamp.valueOf(ahora));
                 ps.setBigDecimal(3, valorTotal);
-                ps.setString(4, metodoPago);
+                ps.setString(4, factura.getMetodoPago().name()); // Guardamos como texto en BD
                 ps.executeUpdate();
 
                 try (ResultSet keys = ps.getGeneratedKeys()) {

@@ -6,25 +6,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.parkingspring.parking.identities.Factura;
 import com.parkingspring.parking.services.FacturaService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/factura")
+@Tag(name = "Facturas", description = "Endpoints para la gestión de facturación y cobros del parqueadero")
 public class FacturaController {
 
     @Autowired
     private FacturaService facturaService;
 
+    @Operation(summary = "Listar todas las facturas", description = "Obtiene el historial completo de facturas emitidas.")
+    @ApiResponse(responseCode = "200", description = "Lista obtenida exitosamente")
     @GetMapping
     public ResponseEntity<List<Factura>> listar() {
         try {
@@ -35,6 +35,9 @@ public class FacturaController {
         }
     }
 
+    @Operation(summary = "Consultar factura por ID", description = "Busca y retorna los detalles de una factura específica.")
+    @ApiResponse(responseCode = "200", description = "Factura encontrada")
+    @ApiResponse(responseCode = "404", description = "Factura no encontrada")
     @GetMapping("/{id}")
     public ResponseEntity<Factura> obtener(@PathVariable Integer id) {
         if (id == null || id <= 0) {
@@ -52,6 +55,8 @@ public class FacturaController {
         }
     }
 
+    @Operation(summary = "Crear factura manualmente", description = "Registra una nueva factura en el sistema.")
+    @ApiResponse(responseCode = "201", description = "Factura creada con éxito")
     @PostMapping
     public ResponseEntity<Factura> crear(@RequestBody Factura factura) {
         if (ObjectUtils.isEmpty(factura) || factura.getIdRegistro() == null || factura.getValorTotal() == null) {
@@ -69,6 +74,8 @@ public class FacturaController {
         }
     }
 
+    @Operation(summary = "Actualizar factura", description = "Modifica los datos de una factura existente.")
+    @ApiResponse(responseCode = "200", description = "Factura actualizada")
     @PutMapping("/{id}")
     public ResponseEntity<Factura> actualizar(@PathVariable Integer id, @RequestBody Factura factura) {
         if (id == null || id <= 0 || ObjectUtils.isEmpty(factura)) {
@@ -86,6 +93,8 @@ public class FacturaController {
         }
     }
 
+    @Operation(summary = "Eliminar factura", description = "Elimina una factura del sistema mediante su ID.")
+    @ApiResponse(responseCode = "204", description = "Factura eliminada (Sin contenido)")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         if (id == null || id <= 0) {

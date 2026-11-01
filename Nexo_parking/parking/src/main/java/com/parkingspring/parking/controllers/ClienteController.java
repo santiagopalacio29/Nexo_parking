@@ -18,13 +18,21 @@ import org.springframework.web.bind.annotation.RestController;
 import com.parkingspring.parking.identities.Cliente;
 import com.parkingspring.parking.services.ClienteService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/clientes")
+@Tag(name = "Clientes", description = "Endpoints para la gestión de clientes del parqueadero")
 public class ClienteController {
 
     @Autowired
     private ClienteService clienteService;
 
+    @Operation(summary = "Listar todos los clientes", description = "Obtiene una lista completa de todos los clientes registrados en el sistema.")
+    @ApiResponse(responseCode = "200", description = "Lista de clientes obtenida exitosamente")
+    @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     @GetMapping
     public ResponseEntity<List<Cliente>> listar() {
         try {
@@ -35,6 +43,11 @@ public class ClienteController {
         }
     }
 
+    @Operation(summary = "Obtener un cliente por ID", description = "Devuelve los datos de un cliente específico basado en su identificador único.")
+    @ApiResponse(responseCode = "200", description = "Cliente encontrado")
+    @ApiResponse(responseCode = "400", description = "ID de cliente inválido")
+    @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
+    @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     @GetMapping("/{id}")
     public ResponseEntity<Cliente> obtener(@PathVariable Integer id) {
         if (id == null || id <= 0) {
@@ -52,6 +65,11 @@ public class ClienteController {
         }
     }
 
+    @Operation(summary = "Registrar un nuevo cliente", description = "Crea un nuevo registro de cliente en la base de datos.")
+    @ApiResponse(responseCode = "201", description = "Cliente creado exitosamente")
+    @ApiResponse(responseCode = "400", description = "Datos de cliente incompletos o inválidos")
+    @ApiResponse(responseCode = "406", description = "No se pudo registrar el cliente")
+    @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     @PostMapping
     public ResponseEntity<Cliente> crear(@RequestBody Cliente cliente) {
         if (ObjectUtils.isEmpty(cliente) || ObjectUtils.isEmpty(cliente.getDocumento())
@@ -70,6 +88,11 @@ public class ClienteController {
         }
     }
 
+    @Operation(summary = "Actualizar un cliente existente", description = "Modifica los datos de un cliente basado en su ID.")
+    @ApiResponse(responseCode = "200", description = "Cliente actualizado exitosamente")
+    @ApiResponse(responseCode = "400", description = "Datos de actualización inválidos")
+    @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
+    @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     @PutMapping("/{id}")
     public ResponseEntity<Cliente> actualizar(@PathVariable Integer id, @RequestBody Cliente cliente) {
         if (id == null || id <= 0 || ObjectUtils.isEmpty(cliente) || ObjectUtils.isEmpty(cliente.getDocumento())) {
@@ -87,6 +110,11 @@ public class ClienteController {
         }
     }
 
+    @Operation(summary = "Eliminar un cliente", description = "Borra el registro de un cliente del sistema utilizando su ID.")
+    @ApiResponse(responseCode = "204", description = "Cliente eliminado exitosamente (Sin contenido)")
+    @ApiResponse(responseCode = "400", description = "ID de cliente inválido")
+    @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
+    @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         if (id == null || id <= 0) {
